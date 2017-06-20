@@ -60,17 +60,18 @@ function generatePageActionClass($moduleInfo)
     $pageActionsClassName = 'Tab';
     $contents = 'function Contents() { return ;}';    
     $shortName = 'SHORTNAME';    
-    $editUrl = $gridId . '/' . strToLower($shortName) . '/edit';   
+    //$editUrl = $gridId . '/' . strToLower($shortName) . '/edit';   
 
     output("Creating: $pageActionsClassName");
-    $return   = createClassFile($pageActionsClassName,$contents);             
+    //$return   = createClassFile($pageActionsClassName,$contents);             
+    $return = loadOrCreateTabXml($pageActionsClassName,$contents);
     return $return;
 }
 /**
 * Generates Customer Tab for Magento Adminhtml 
 *
 * @command magento2:generate:customer_tab
-* @argument module_name Module Name? [Pulsestorm_HelloGenerateTab]
+* @argument module_name Module Name? [Pulsestorm_GenerateTab]
 * @argument id Menu Link ID [<$module_name$>::unique_identifier]
 * @argument resource ACL Resource [<$id$>]
 * @argument title Link Title [My Link Title]
@@ -80,7 +81,7 @@ function generatePageActionClass($moduleInfo)
 function pestle_cli($argv)
 {
     extract($argv);
-    $module_info      = getModuleInformation($module);
+    $module_info = getModuleInformation($module_name);
 
     $xmlpath = getModuleInformation($module_name)->folder . '/view/adminhtml/layout/customer_index_edit.xml';
     $xml  = loadOrCreateTabXml($xmlpath);
@@ -90,10 +91,9 @@ function pestle_cli($argv)
     $classpath = getModuleInformation($module_name)->folder . '/Block/Adminhtml/Edit/Tab/Compared.php';
     $classtext = generatePageActionClass(
         $module_info, 
-        $grid_id, 
-        $db_id_column);                    
+        $id);                    
         
-    output("Don't forget to add this to your layout XML with <uiComponent name=\"{$argv['grid_id']}\"/> ");        
+    output("Don't forget to add this to your layout XML with <uiComponent name=\"{$argv['id']}\"/> ");        
 
     writeStringToFile($classpath, $classtext);
     output("Writing: $classpath");
